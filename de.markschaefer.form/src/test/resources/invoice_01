@@ -1,0 +1,26 @@
+# Kommentar
+
+template=d:/template.pdf
+out=${title}
+
+date=${currentDate}
+
+title=Rechnung Nr. KBV-${date}
+author=Dr. Mark Schäfer
+
+absender=Dr. Mark Schäfer IT-Consulting - Hof Lethaus 34 - 59192 Bergkamen
+adresse=KV Telematik GmbH, Herbert Lewin Platz 43, 90993 Berlin 
+
+betreff=${title}
+
+#Nr, Bezeichnung, Anzahl, Einheit, Preis
+
+posten.1=Dienstleistungm, 201 Stunden, 100 Euro/Stunde, 45303.00 
+posten.2=Bahn, 21.5.14 Hamm Berlin, 1, 123.34
+
+floskel=Zahlbar ohne Abzüge innerhalb von 14 Tagen
+
+
+
+
+
