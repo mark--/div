@@ -1,6 +1,6 @@
 # Kommentar
 
-template=d:/template.pdf
+template=/home/mark/RechnungTemplate.pdf
 out=${title}
 
 date=${currentDate}

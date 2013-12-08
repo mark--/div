@@ -2,16 +2,34 @@ package de.markschaefer.form;
 
 import static de.markschaefer.form.Util.*;
 
-import java.io.*;
-import java.text.*;
-import java.util.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-import org.apache.commons.configuration.*;
-import org.apache.commons.lang.*;
-import org.slf4j.*;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.ConfigurationUtils;
+import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.*;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfImportedPage;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfWriter;
 
 public class Main
 {
@@ -28,11 +46,12 @@ public class Main
 			return;
 		}
 
+		LOG.info("*** Starting Form Filler ***");
 		Configuration props = read(args[0]);
 		ConfigurationUtils.dump(props, System.out);
 
 		Document document = new Document();
-		FileOutputStream os = new FileOutputStream("d:/out.pdf");
+		FileOutputStream os = new FileOutputStream("/home/mark/out.pdf");
 		PdfWriter writer = PdfWriter.getInstance(document, os);
 		document.open();
 
@@ -40,6 +59,17 @@ public class Main
 
 		baseFont = BaseFont.createFont("src/test/resources/Gudea-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 		content.setFontAndSize(baseFont, 17);
+
+		InputStream is = new FileInputStream(props.getString("template"));
+		// Here's the key part. Let's turn the template in to
+		// usable PDF object
+		PdfReader reader = new PdfReader(is);
+		PdfImportedPage page = writer.getImportedPage(reader, 1);
+
+		// Now, add it to the blank PDF document we've opened
+		PdfContentByte cb = writer.getDirectContent();
+		cb.addTemplate(page, 0, 0);
+		is.close();
 
 		createColumn(content, getAbsenderArea(), getAbsender(props));
 		createColumn(content, getAddresArea(), getAdresse(props));
